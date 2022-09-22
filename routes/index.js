@@ -12,8 +12,7 @@ router.get('/:id', async function (req, res, next) {
   var ua = parser(req.headers['user-agent']);
   const findUrl = await Url.find({ shortUrl: url });
   var mac_ip =  os.networkInterfaces()
-  console.log(mac_ip);
-  const mac =  mac_ip.en0[0];
+  const mac =  mac_ip;
   const clicked = {
     UserBowse: ua.browser.name,
     UserInform: ua.ua,
@@ -29,7 +28,7 @@ router.get('/:id', async function (req, res, next) {
        $addToSet: {
          clicked: {
            UserBowse: ua.browser.name,
-           UserInform: mac,
+           UserInform: mac.en0[0].mac,
            UserSystem: ua.os.name,
          },
        },
