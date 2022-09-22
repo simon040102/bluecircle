@@ -11,7 +11,7 @@ router.get('/:id', async  (req, res, next)=> {
   const url = req.params.id;
   var ua = parser(req.headers['user-agent']);
   const findUrl = await Url.find({ shortUrl: url });
-  const mac_ip = await os.networkInterfaces()
+  const mac_ip =  os.networkInterfaces() || []
   console.log(mac_ip);
   const clicked = {
     UserBowse: ua.browser.name,
