@@ -29,7 +29,7 @@ router.post('/', isAuth,upload,handleErrorAsync(async (req, res, next)=> {
         imgUrl: response.data.link
     })
 }));
-router.post('/post', isAuth,upload,handleErrorAsync(async (req, res, next)=> {
+router.post('/url_img', isAuth,upload,handleErrorAsync(async (req, res, next)=> {
     if(!req.files.length) {
       return next(appError(400,"尚未上傳檔案",next));
     }

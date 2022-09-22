@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cors = require('cors')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var clickedInfRouter = require('./routes/clickedInf');
+var urlRouter =require('./routes/url')
 const uploadRouter = require('./routes/upload');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -35,6 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/upload', uploadRouter)
+app.use('/url', urlRouter);
+app.use('/clickedInf', clickedInfRouter);
 // 404 錯誤
 app.use(function(req, res, next) {
   res.status(404).json({
