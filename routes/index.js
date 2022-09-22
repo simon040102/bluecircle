@@ -6,34 +6,39 @@ const clickedInf = require('../models/clickedInfModel');
 const appError = require('../service/appError');
 const os = require('os');
 
+
+const getMac=(macAry)=>{
+return macAry.en0[0].mac
+}
+
 /* GET home page. */
-router.get('/:id', async  (req, res, next)=> {
+router.get('/:id', async (req, res, next) => {
   const url = req.params.id;
   var ua = parser(req.headers['user-agent']);
   const findUrl = await Url.find({ shortUrl: url });
-  const mac_ip =  os.networkInterfaces() || []
-  const mac = mac_ip.en0[0]
+  const mac_ip = os.networkInterfaces() || [];
+  const mac = await getMac(mac_ip);
+
   console.log(mac);
   const clicked = {
     UserBowse: ua.browser.name,
-    UserInform: mac.mac,
+    UserInform: mac,
     UserSystem: ua.os.name,
   };
   if (findUrl.length == 0) {
     return next(appError('400', '網址錯誤', next));
   }
   if (url.length == 6) {
-   await clickedInf.updateOne(
-     { shortUrl: url },
-     {
-       $addToSet: {
-         clicked: clicked
-       },
-     }
-   );
+    await clickedInf.updateOne(
+      { shortUrl: url },
+      {
+        $addToSet: {
+          clicked: clicked,
+        },
+      }
+    );
     const originUrl = findUrl[0].url;
     res.redirect(`${originUrl}`);
-    
   } else {
     {
       res.render('index', { title: 'Express' });
