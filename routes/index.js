@@ -15,7 +15,7 @@ router.get('/:id', async  (req, res, next)=> {
   console.log(mac_ip);
   const clicked = {
     UserBowse: ua.browser.name,
-    UserInform: mac_ip.en0[0].mac,
+    UserInform: mac_ip?.en0[0]?.mac,
     UserSystem: ua.os.name,
   };
   if (findUrl.length == 0) {
