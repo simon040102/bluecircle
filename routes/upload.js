@@ -6,7 +6,7 @@ const sizeOf = require('image-size');
 const upload = require('../service/image');
 const { ImgurClient } = require('imgur');
 const {isAuth,generateSendJWT} = require('../service/auth');
-router.post('/', isAuth,upload,handleErrorAsync(async (req, res, next)=> {
+router.post('/ProfilePhoto', isAuth,upload,handleErrorAsync(async (req, res, next)=> {
     if(!req.files.length) {
       return next(appError(400,"尚未上傳檔案",next));
     }

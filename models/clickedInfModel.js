@@ -16,6 +16,9 @@ const clickedInfSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'user',
   },
+  urlId: {
+    type: mongoose.Schema.ObjectId,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

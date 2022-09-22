@@ -34,11 +34,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+
 app.use('/users', usersRouter);
 app.use('/upload', uploadRouter)
 app.use('/url', urlRouter);
 app.use('/clickedInf', clickedInfRouter);
+app.use('/', indexRouter);
 // 404 錯誤
 app.use(function(req, res, next) {
   res.status(404).json({

@@ -16,9 +16,11 @@ const urlSchema = new mongoose.Schema({
   title:{
     type:String,
   },
+  description:{type:String},
   photo:{
     type:String
   },
+  tag:[String],
   createdAt: {
     type: Date,
     default: Date.now,
