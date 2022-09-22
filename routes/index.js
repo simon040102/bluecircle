@@ -12,10 +12,11 @@ router.get('/:id', async  (req, res, next)=> {
   var ua = parser(req.headers['user-agent']);
   const findUrl = await Url.find({ shortUrl: url });
   const mac_ip =  os.networkInterfaces() || []
-  console.log(mac_ip);
+  const mac = mac_ip.en0[0]
+  console.log(mac);
   const clicked = {
     UserBowse: ua.browser.name,
-    UserInform: mac_ip?.en0[0]?.mac,
+    UserInform: mac.mac,
     UserSystem: ua.os.name,
   };
   if (findUrl.length == 0) {
