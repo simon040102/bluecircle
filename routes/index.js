@@ -7,12 +7,14 @@ const appError = require('../service/appError');
 const os = require('os');
 
 /* GET home page. */
-router.get('/:id', async function (req, res, next) {
+router.get('/:id', async  (req, res, next)=> {
   const url = req.params.id;
+    const mac_ip = await os.networkInterfaces();
   var ua = parser(req.headers['user-agent']);
   const findUrl = await Url.find({ shortUrl: url });
-  var mac_ip =  os.networkInterfaces()
-  const mac =  mac_ip;
+
+  console.log(mac_ip);
+  const mac =  mac_ip.en0[0].mac;
   const clicked = {
     UserBowse: ua.browser.name,
     UserInform: ua.ua,
@@ -28,7 +30,7 @@ router.get('/:id', async function (req, res, next) {
        $addToSet: {
          clicked: {
            UserBowse: ua.browser.name,
-           UserInform: mac.en0[0].mac,
+           UserInform: mac,
            UserSystem: ua.os.name,
          },
        },
