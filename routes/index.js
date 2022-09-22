@@ -9,15 +9,13 @@ const os = require('os');
 /* GET home page. */
 router.get('/:id', async  (req, res, next)=> {
   const url = req.params.id;
-    const mac_ip = await os.networkInterfaces();
   var ua = parser(req.headers['user-agent']);
   const findUrl = await Url.find({ shortUrl: url });
-
+  const mac_ip = await os.networkInterfaces()
   console.log(mac_ip);
-  const mac =  mac_ip.en0[0].mac;
   const clicked = {
     UserBowse: ua.browser.name,
-    UserInform: ua.ua,
+    UserInform: mac_ip.en0[0].mac,
     UserSystem: ua.os.name,
   };
   if (findUrl.length == 0) {
@@ -28,11 +26,7 @@ router.get('/:id', async  (req, res, next)=> {
      { shortUrl: url },
      {
        $addToSet: {
-         clicked: {
-           UserBowse: ua.browser.name,
-           UserInform: mac,
-           UserSystem: ua.os.name,
-         },
+         clicked: clicked
        },
      }
    );
