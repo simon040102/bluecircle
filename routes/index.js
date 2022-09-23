@@ -31,7 +31,7 @@ router.get('/:id', async  (req, res, next)=> {
        $addToSet: {
          clicked: {
            UserBowse: ua.browser.name,
-           UserInform: mac,
+           UserInform: ip,
            UserSystem: ua.os.name,
          },
        },
