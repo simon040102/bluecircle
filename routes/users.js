@@ -5,8 +5,17 @@ const jwt = require('jsonwebtoken');
 const handleErrorAsync = require('../service/handleErrorAsync');
 const validator = require('validator');
 const User = require('../models/usersModel');
-const { isAuth, generateSendJWT } = require('../service/auth');
+const nodemailer = require('nodemailer');
+const {
+  isAuth,
+  generateSendJWT,
+  forgetPasswordJWT,
+} = require('../service/auth');
 const router = express.Router();
+
+
+
+
 
 router.post(
   '/sign_up',
@@ -101,38 +110,40 @@ router.patch(
 );
 
 router.post(
-  '/updatePassword',
-  isAuth,
-  handleErrorAsync(async (req, res, next) => {
-    const { password, confirmPassword } = req.body;
-    if (password !== confirmPassword) {
-      return next(appError('400', '密碼不一致！', next));
-    }
-    if (
-      !validator.isStrongPassword(password, {
-        minLength: 8,
-        minLowercase: 0,
-        minUppercase: 1,
-        minNumbers: 0,
-        minSymbols: 1,
-        returnScore: false,
-        pointsPerUnique: 0,
-        pointsPerRepeat: 0,
-        pointsForContainingLower: 0,
-        pointsForContainingUpper: 0,
-        pointsForContainingNumber: 0,
-        pointsForContainingSymbol: 0,
-      })
-    ) {
-      return next(appError('400', '密碼至少8碼，一個大寫和一個符號', next));
-    }
-
-    newPassword = await bcrypt.hash(password, 12);
-
-    const user = await User.findByIdAndUpdate(req.user.id, {
-      password: newPassword,
+  '/forget', handleErrorAsync(async (req, res, next) => {
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.MAIL_FROM,
+        pass: process.env.MAIL_PASSWORD,
+      },
     });
-    generateSendJWT(user, 200, res);
+    const {email}=req.body
+    const user = await User.findOne({ email });
+    if(!user){return next(appError(400, '查無此email', next));}
+    const token = forgetPasswordJWT(user, res);
+    transporter
+      .sendMail({
+        from: process.env.MAIL_FROM,
+        to: email,
+        subject: 'BlueCircle 忘記密碼驗證信',
+        html: `<p>請點擊連擊修改密碼<p/><a href="http://127.0.0.1:5173/changepassword/${token}">驗證連結</a>`,
+      })
+      .then((info) => {
+        console.log({ info });
+      })
+      .catch(err=>{
+        console.log(err)
+      });
+    
+    res.status(200).json({
+      status: 'success',
+      message:'已寄出驗證信'
+    });
   })
 );
+
 module.exports = router;
