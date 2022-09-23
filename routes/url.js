@@ -36,6 +36,7 @@ router.post(
       clickedInf.create({
         shortUrl: garbled,
         userId: userId,
+        urlId:newUrl._id
       });
       res.status(200).json({
         status: 'success',
@@ -55,6 +56,23 @@ router.get(
     res.status(200).json({
       status: 'success',
       urlList: urlList,
+    });
+  })
+);
+
+router.get(
+  '/:id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const urlId = req.body.id;
+    const url = await clickedInf.find({ urlId: urlId });
+    const mac = await clickedInf.orders.aggregate([
+        {$match:{}}
+    ])
+    console.log(url);
+    res.status(200).json({
+      status: 'success',
+      urlList: url,
     });
   })
 );
