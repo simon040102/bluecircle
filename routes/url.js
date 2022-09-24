@@ -47,6 +47,46 @@ router.post(
 );
 
 router.get(
+  '/',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+       const page = parseInt(req.query.page);
+       const limit = parseInt(req.query.limit);
+       const startIndex = (page - 1) * limit;
+       const endIndex = page * limit;
+
+       const results = {};
+
+       if (endIndex < (await Url.countDocuments().exec())) {
+         results.next = {
+           page: page + 1,
+           limit: limit,
+         };
+       }
+
+       if (startIndex > 0) {
+         results.previous = {
+           page: page - 1,
+           limit: limit,
+         };
+       }
+       try {
+         const urlList = await Url.find()
+           .limit(limit)
+           .skip(startIndex)
+           .exec();
+        res.status(200).json({
+          status: 'success',
+          page:results,
+          urlList,
+        });
+       } catch (e) {
+         res.status(500).json({ message: e.message });
+       }
+  })
+);
+
+router.get(
   '/list',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
@@ -59,20 +99,34 @@ router.get(
     });
   })
 );
+function removeDuplicates(originalArray, prop) {
+  var newArray = [];
+  var lookupObject = {};
+
+  for (var i in originalArray) {
+    lookupObject[originalArray[i][prop]] = originalArray[i];
+  }
+
+  for (i in lookupObject) {
+    newArray.push(lookupObject[i]);
+  }
+  return newArray;
+}
 
 router.get(
   '/:id',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-    const urlId = req.body.id;
+    const urlId = req.params.id;
     const url = await clickedInf.find({ urlId: urlId });
-    const mac = await clickedInf.orders.aggregate([
-        {$match:{}}
-    ])
-    console.log(url);
+    const clicked =  url[0].clicked;
+    const NotRepeating=  removeDuplicates(clicked, 'UserInform');
+    // console.log(clicked.length, NotRepeating.length);
     res.status(200).json({
       status: 'success',
-      urlList: url,
+      repeatTimes: clicked.length,
+      notRepeatTimes: NotRepeating.length,
+      notRepeatList: NotRepeating,
     });
   })
 );

@@ -11,7 +11,6 @@ router.get('/:id', async  (req, res, next)=> {
   const url = req.params.id;
   var ua = parser(req.headers['user-agent']);
   const findUrl = await Url.find({ shortUrl: url });
-  console.log(req.socket.remoteAddress);
   const ip = req.socket.remoteAddress;
   // const mac =   mac_ip.en0[0].mac 
   //   mac_ip.en0[0].mac //本地版
