@@ -36,6 +36,7 @@ router.get('/:id', async  (req, res, next)=> {
        },
      }
    );
+   res.write(`<head><meta property="og:image" content="${findUrl.photo}"><head>`);
     const originUrl = findUrl[0].url;
     res.redirect(`${originUrl}`);
     
