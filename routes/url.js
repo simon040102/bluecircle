@@ -47,7 +47,7 @@ router.post(
 );
 
 router.get(
-  '/',
+  '/list',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
     const userId = req.user._id;
