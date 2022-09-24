@@ -44,9 +44,8 @@ router.get('/:id', async  (req, res, next)=> {
       images: findUrl[0].photo,
       description: findUrl[0].description,
       title: findUrl[0].title,
+      url:findUrl[0].url
     });
-    const originUrl = findUrl[0].url;
-    res.redirect(`${originUrl}`);
     
   }
 });
