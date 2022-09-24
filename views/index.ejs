@@ -7,10 +7,10 @@
     <meta property="og:image" content=<%= images %> >
     <meta name="description" content=<%= description %>>
     <meta property="og:title" content=<%= title %> />
-    <meta http-equiv="refresh" content="0;url=<%= url %>" />
+    <!-- <meta http-equiv="refresh" content="0;url=<%= url %>" /> -->
     <title>網頁轉址中...</title>
 </head>
 <body>
-    
+    <script>document.location.href='<%= url %>';</script>
 </body>
 </html>
