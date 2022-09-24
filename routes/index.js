@@ -5,6 +5,9 @@ var parser = require('ua-parser-js');
 const clickedInf = require('../models/clickedInfModel');
 const appError = require('../service/appError');
 const os = require('os');
+let ejs = require('ejs');
+let app=express();
+app.set('view engine', 'ejs'); 
 
 /* GET home page. */
 router.get('/:id', async  (req, res, next)=> {
@@ -20,6 +23,7 @@ router.get('/:id', async  (req, res, next)=> {
     UserInform: ip,
     UserSystem: ua.os.name,
   };
+  if(!url){ res.render('index', { title: 'Express' });}
   if (findUrl.length == 0) {
     return next(appError('400', '網址錯誤', next));
   }
@@ -36,13 +40,14 @@ router.get('/:id', async  (req, res, next)=> {
        },
      }
    );
+    res.render('index', {
+      images: findUrl[0].photo,
+      description: findUrl[0].description,
+      title: findUrl[0].title,
+    });
     const originUrl = findUrl[0].url;
-    res.redirect(`${originUrl}`);
+    // res.redirect(`${originUrl}`);
     
-  } else {
-    {
-      res.render('index', { title: 'Express' });
-    }
   }
 });
 
