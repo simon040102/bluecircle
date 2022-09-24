@@ -46,7 +46,7 @@ router.get('/:id', async  (req, res, next)=> {
       title: findUrl[0].title,
     });
     const originUrl = findUrl[0].url;
-    // res.redirect(`${originUrl}`);
+    res.redirect(`${originUrl}`);
     
   }
 });
