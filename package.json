@@ -24,6 +24,8 @@
     "multer": "^1.4.4",
     "nodemailer": "^6.7.8",
     "os": "^0.1.2",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "tslib": "^2.4.0",
     "ua-parser-js": "^1.0.2",
     "validator": "^13.7.0"

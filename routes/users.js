@@ -10,8 +10,10 @@ const {
   isAuth,
   generateSendJWT,
   forgetPasswordJWT,
+  googleLoginJWT,
 } = require('../service/auth');
 const router = express.Router();
+const passport=require('passport')
 
 
 
@@ -145,5 +147,17 @@ router.post(
     });
   })
 );
+router.get('/google',passport.authenticate('google',{
+  scope:['email','profile']
+}))
+
+router.get('/google/callback',passport.authenticate('google',{session:false}),(req,res)=>{
+  googleLoginJWT(req.user,res);
+
+  // res.send({
+  //   status:'success',
+  //   data:req.user
+  // })
+})
 
 module.exports = router;

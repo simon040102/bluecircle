@@ -55,8 +55,17 @@ const generateSendJWT= (user,statusCode,res)=>{
     user.email = undefined;
     return token
   };
+
+  const googleLoginJWT = (user, res) => {
+    // 產生 忘記密碼JWT token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_DAY,
+    });
+    res.redirect(`http://127.0.0.1:5173/callback?token=${token}&name=${user.name}`);
+  };
 module.exports = {
   isAuth,
   generateSendJWT,
   forgetPasswordJWT,
+  googleLoginJWT,
 };

@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
     select: false,
   },
+  googleId:{type:String}
 });
 // User
 const User = mongoose.model('user', userSchema);

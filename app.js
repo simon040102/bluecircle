@@ -9,8 +9,11 @@ var clickedInfRouter = require('./routes/clickedInf');
 var urlRouter =require('./routes/url')
 const uploadRouter = require('./routes/upload');
 const mongoose = require('mongoose');
+require('./service/passport')
 const dotenv = require('dotenv');
 var app = express();
+
+
 app.set('view engine', 'ejs');
 // 程式出現重大錯誤時
 process.on('uncaughtException', err => {
