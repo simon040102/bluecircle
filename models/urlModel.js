@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const clickedInf = require('./clickedInfModel');
 const urlSchema = new mongoose.Schema({
   url: {
     type: String,
@@ -13,20 +14,27 @@ const urlSchema = new mongoose.Schema({
     ref: 'user',
     require: [true, 'user must belong to a post.'],
   },
-  title:{
-    type:String,
+  title: {
+    type: String,
+    default: '',
   },
-  description:{type:String},
-  photo:{
-    type:String
+  description: { type: String, default: '' },
+  photo: {
+    type: String,
+    default: '',
   },
-  tag:[String],
+  tag: [String],
   createdAt: {
     type: Date,
     default: Date.now,
     select: false,
   },
- 
+  urlId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'clickedinf',
+  },
+  repeatTimes: { type: String },
+  notRepeatTimes: { type: String },
 });
 // url
 const Url = mongoose.model('url', urlSchema);

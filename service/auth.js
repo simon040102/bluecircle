@@ -57,7 +57,7 @@ const generateSendJWT= (user,statusCode,res)=>{
   };
 
   const googleLoginJWT = (user, res) => {
-    // 產生 忘記密碼JWT token
+    // 登入google
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_DAY,
     });

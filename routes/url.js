@@ -6,7 +6,7 @@ const { isAuth, generateSendJWT } = require('../service/auth');
 const router = express.Router();
 const handleErrorAsync = require('../service/handleErrorAsync');
 const random = require('../service/random');
-const clickedInf = require('../models/clickedInfModel');
+const ClickedInf = require('../models/clickedInfModel');
 
 router.post(
   '/',
@@ -28,16 +28,17 @@ router.post(
       if (shortUrl) {
         garbled = shortUrl;
       }
+       const clickId = await ClickedInf.create({
+         shortUrl: garbled,
+         userId: userId,
+       });
       const newUrl = await Url.create({
         userId: userId,
         url: back,
         shortUrl: garbled,
+        urlId: clickId._id,
       });
-      clickedInf.create({
-        shortUrl: garbled,
-        userId: userId,
-        urlId:newUrl._id
-      });
+     
       res.status(200).json({
         status: 'success',
         newUrl,
@@ -50,61 +51,59 @@ router.get(
   '/',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-       const page = parseInt(req.query.page);
-       const limit = parseInt(req.query.limit);
-       const q = req.query.q;
-       const startIndex = (page - 1) * limit;
-       const endIndex = page * limit;
-         const sort = req.query.sort 
-         if (sort == 'asc') {
-           sort == 'asc' && 'createdAt';
-         };
+    const userId = req.user._id;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+    const q = req.query.q;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const timeSort = req.query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
 
-     if (page && limit) {
-       const results = {};
+    if (page && limit) {
+      const results = {};
 
-       if (endIndex < (await Url.countDocuments().exec())) {
-         results.next = {
-           page: page + 1,
-           limit: limit,
-         };
-       }
+      if (
+        endIndex < (await Url.find({ userId: userId }).countDocuments().exec())
+      ) {
+        results.next = {
+          page: page + 1,
+          limit: limit,
+        };
+      }
 
-       if (startIndex > 0) {
-         results.previous = {
-           page: page - 1,
-           limit: limit,
-         };
-       }
-       try {
-         const urlList = await Url.find()
-           .sort(sort)
-           .limit(limit)
-           .skip(startIndex)
-           
-         res.status(200).json({
-           status: 'success',
-           page: results,
-           urlList,
-         });
-       } catch (e) {
-         res.status(500).json({ message: e.message });
-       }
-     }
-     else if(q){
-       const q =
-         req.query.q !== undefined ? { "url": new RegExp(req.query.q) } : {};
-       const result = await Url.find(q);
-      res.status(200).json({
-        status: 'success',
-        data: result,
-      });
-      
-     }
+      if (startIndex > 0) {
+        results.previous = {
+          page: page - 1,
+          limit: limit,
+        };
+      }
+      try {
+        const urlList = await Url.find({ userId: userId })
+          .sort(timeSort)
+          .limit(limit)
+          .skip(startIndex);
+
+        res.status(200).json({
+          status: 'success',
+          page: results,
+          urlList,
+        });
+      } catch (e) {
+        res.status(500).json({ message: e.message });
+      }
+    }
+    //  else if(q){
+    //    const q =
+    //      req.query.q !== undefined ? { "url": new RegExp(req.query.q) } : {};
+    //    const result = await Url.find(q);
+    //   res.status(200).json({
+    //     status: 'success',
+    //     data: result,
+    //   });
+
+    //  }
   })
 );
-
-
 
 router.get(
   '/list',
@@ -138,10 +137,10 @@ router.get(
   isAuth,
   handleErrorAsync(async (req, res, next) => {
     const urlId = req.params.id;
-    const url = await clickedInf.find({ urlId: urlId });
-    const clicked =  url[0].clicked;
-    const NotRepeating=  removeDuplicates(clicked, 'UserInform');
-    // console.log(clicked.length, NotRepeating.length);
+    const url = await ClickedInf.find({ urlId: urlId });
+    const clicked = url[0].clicked;
+    const NotRepeating = removeDuplicates(clicked, 'UserInform');
+    console.log(clicked.length, NotRepeating.length);
     res.status(200).json({
       status: 'success',
       repeatTimes: clicked.length,
@@ -155,9 +154,9 @@ router.patch(
   '/:id/',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-    const urlId=req.params.id
-    const newInf=req.body
-    
+    const urlId = req.params.id;
+    const newInf = req.body;
+
     await Url.findByIdAndUpdate({ _id: urlId }, newInf);
     res.status(200).json({
       status: 'success',
