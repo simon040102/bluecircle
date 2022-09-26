@@ -68,13 +68,18 @@ router.get('/:id', async  (req, res, next)=> {
        notRepeatTimes: NotRepeating.length,
      }
    );
+   if (findUrl[0].photo!==""&& findUrl[0].description!==""&&findUrl[0].title!==""){
+     res.render('ogContent', {
+       images: findUrl[0].photo,
+       description: findUrl[0].description,
+       title: findUrl[0].title,
+       url: findUrl[0].url,
+     });
+   }else{
     res.render('index', {
-      images: findUrl[0].photo,
-      description: findUrl[0].description,
-      title: findUrl[0].title,
-      url:findUrl[0].url
+      url: findUrl[0].url,
     });
-    
+   }
   }
 });
 
