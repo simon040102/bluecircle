@@ -13,9 +13,11 @@
 <body>
     
 <script>
-    if(images){$('meta[property=og\\:image]').attr('content', '<%= images %>')};
-    if(description){$('meta[property=description]').attr('content', '<%= description %>');}
-    if(title){$('meta[property=og\\:title]').attr('content', '<%= title %>');}
+    $(document).ready(function(){
+    if('<%= images %>'!==""){$('meta[property=og\\:image]').attr('content', '<%= images %>')};
+    if('<%= description %>'!==""){$('meta[property=description]').attr('content', '<%= description %>');}
+    if('<%= title %>'!==""){$('meta[property=og\\:title]').attr('content', '<%= title %>');}
+    });
 </script>
 <!-- <script>document.location.href='<%= url %>'</script> -->
 </html>
