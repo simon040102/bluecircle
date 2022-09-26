@@ -71,7 +71,7 @@ router.post(
   })
 );
 
-router.post(
+router.patch(
   '/updatePassword',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
