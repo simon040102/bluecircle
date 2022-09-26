@@ -52,9 +52,13 @@ router.get(
   handleErrorAsync(async (req, res, next) => {
        const page = parseInt(req.query.page);
        const limit = parseInt(req.query.limit);
-       const search = req.query.search;
+       const q = req.query.q;
        const startIndex = (page - 1) * limit;
        const endIndex = page * limit;
+         const sort = req.query.sort 
+         if (sort == 'asc') {
+           sort == 'asc' && 'createdAt';
+         };
 
      if (page && limit) {
        const results = {};
@@ -73,7 +77,11 @@ router.get(
          };
        }
        try {
-         const urlList = await Url.find().limit(limit).skip(startIndex).exec();
+         const urlList = await Url.find()
+           .sort(sort)
+           .limit(limit)
+           .skip(startIndex)
+           
          res.status(200).json({
            status: 'success',
            page: results,
@@ -83,17 +91,16 @@ router.get(
          res.status(500).json({ message: e.message });
        }
      }
-    //  else if(search){
+     else if(q){
+       const q =
+         req.query.q !== undefined ? { "url": new RegExp(req.query.q) } : {};
+       const result = await Url.find(q);
+      res.status(200).json({
+        status: 'success',
+        data: result,
+      });
       
-    //   const result = await Url.find({
-    //     $or: [{ url: search }],
-    //   });
-    //   res.status(200).json({
-    //     status: 'success',
-    //     data: result,
-    //   });
-      
-    //  }
+     }
   })
 );
 
