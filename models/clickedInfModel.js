@@ -29,6 +29,6 @@ const clickedInfSchema = new mongoose.Schema({
   notRepeatTimes: { type: String },
 });
 // url
-const ClickedInf = mongoose.model('clickedInf', clickedInfSchema);
+const ClickedInf = mongoose.model('clickedinf', clickedInfSchema);
 
 module.exports = ClickedInf;

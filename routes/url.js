@@ -6,7 +6,7 @@ const { isAuth, generateSendJWT } = require('../service/auth');
 const router = express.Router();
 const handleErrorAsync = require('../service/handleErrorAsync');
 const random = require('../service/random');
-const ClickedInf = require('../models/clickedInfModel');
+const clickedInf = require('../models/clickedInfModel');
 
 router.post(
   '/',
@@ -28,7 +28,7 @@ router.post(
       if (shortUrl) {
         garbled = shortUrl;
       }
-      const clickId = await ClickedInf.create({
+      const clickId = await clickedInf.create({
         shortUrl: garbled,
         userId: userId,
       });
@@ -82,7 +82,7 @@ router.get(
       try {
         if (sort == 'asc') {
           const urlList = await Url.find({ userId: userId })
-            .sort(sort)
+            .sort('createdAt')
             .limit(limit)
             .skip(startIndex);
 
@@ -97,6 +97,16 @@ router.get(
             .limit(limit)
             .skip(startIndex);
 
+          res.status(200).json({
+            status: 'success',
+            page: results,
+            urlList,
+          });
+        }else{
+           const urlList = await Url.find({ userId: userId })
+             .sort('-createdAt')
+             .limit(limit)
+             .skip(startIndex);
           res.status(200).json({
             status: 'success',
             page: results,
@@ -152,8 +162,10 @@ router.get(
   isAuth,
   handleErrorAsync(async (req, res, next) => {
     const urlId = req.params.id;
-    const url = await ClickedInf.find({ urlId: urlId });
-    const clicked = url[0].clicked;
+    console.log(urlId);
+
+    const url = await clickedInf.findOne({ id: urlId });
+    const clicked = url.clicked;
     const NotRepeating = removeDuplicates(clicked, 'UserInform');
     console.log(clicked.length, NotRepeating.length);
     res.status(200).json({
