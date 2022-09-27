@@ -28,17 +28,17 @@ router.post(
       if (shortUrl) {
         garbled = shortUrl;
       }
-       const clickId = await ClickedInf.create({
-         shortUrl: garbled,
-         userId: userId,
-       });
+      const clickId = await ClickedInf.create({
+        shortUrl: garbled,
+        userId: userId,
+      });
       const newUrl = await Url.create({
         userId: userId,
         url: back,
         shortUrl: garbled,
         urlId: clickId._id,
       });
-     
+
       res.status(200).json({
         status: 'success',
         newUrl,
@@ -57,8 +57,10 @@ router.get(
     const q = req.query.q;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const timeSort = req.query.timeSort == 'asc' ? 'createdAt' : '-createdAt';
-
+    // const timeSort = req.query.timeSort == 'asc' ? '-createdAt' : 'createdAt';
+    // const sort =
+    //   req.query.sort == 'click' ? 'notRepeatTimes' : '-notRepeatTimes';
+    const sort = req.query.sort;
     if (page && limit) {
       const results = {};
 
@@ -78,16 +80,29 @@ router.get(
         };
       }
       try {
-        const urlList = await Url.find({ userId: userId })
-          .sort(timeSort)
-          .limit(limit)
-          .skip(startIndex);
+        if (sort == 'asc') {
+          const urlList = await Url.find({ userId: userId })
+            .sort(sort)
+            .limit(limit)
+            .skip(startIndex);
 
-        res.status(200).json({
-          status: 'success',
-          page: results,
-          urlList,
-        });
+          res.status(200).json({
+            status: 'success',
+            page: results,
+            urlList,
+          });
+        }else if(sort=='clicked'){
+          const urlList = await Url.find({ userId: userId })
+            .sort({ notRepeatTimes: -1 })
+            .limit(limit)
+            .skip(startIndex);
+
+          res.status(200).json({
+            status: 'success',
+            page: results,
+            urlList,
+          });
+        }
       } catch (e) {
         res.status(500).json({ message: e.message });
       }

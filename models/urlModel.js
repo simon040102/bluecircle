@@ -33,8 +33,8 @@ const urlSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'clickedinf',
   },
-  repeatTimes: { type: String },
-  notRepeatTimes: { type: String },
+  repeatTimes: { type: Number ,default:0},
+  notRepeatTimes: { type: Number ,default:0},
 });
 // url
 const Url = mongoose.model('url', urlSchema);
