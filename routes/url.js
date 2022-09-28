@@ -65,7 +65,7 @@ router.get(
       const results = {};
 
       if (
-        endIndex < (await Url.find({ userId: userId }).countDocuments().exec())
+        endIndex < (await Url.find({ userId: userId }).countDocuments().exec()) && q==undefined
       ) {
         results.next = {
           page: page + 1,
@@ -80,6 +80,42 @@ router.get(
         };
       }
       try {
+        if (q !== undefined) {
+          var reg = new RegExp(q, 'i');
+          sort == 'asc' ? 'createdAt' : '-notRepeatTimes';
+          const filter = {
+            $or: [
+              { url: { $regex: reg } },
+              { shortUrl: { $regex: reg } },
+              { tag: { $regex: reg } },
+              { description: { $regex: reg } },
+              { title: { $regex: reg } },
+            ],
+          };
+          if (endIndex < (await Url.find(filter).countDocuments().exec())) {
+            results.next = {
+              page: page + 1,
+              limit: limit,
+            };
+          }
+
+          if (startIndex > 0) {
+            results.previous = {
+              page: page - 1,
+              limit: limit,
+            };
+          }
+          const urlList = await Url.find(filter)
+            .sort(sort)
+            .limit(limit)
+            .skip(startIndex);
+          res.status(200).json({
+            status: 'success',
+            page: results,
+            urlList,
+          });
+          return
+        }
         if (sort == 'asc') {
           const urlList = await Url.find({ userId: userId })
             .sort('createdAt')
@@ -91,7 +127,7 @@ router.get(
             page: results,
             urlList,
           });
-        }else if(sort=='clicked'){
+        } if (sort == 'clicked') {
           const urlList = await Url.find({ userId: userId })
             .sort({ notRepeatTimes: -1 })
             .limit(limit)
@@ -102,11 +138,11 @@ router.get(
             page: results,
             urlList,
           });
-        }else{
-           const urlList = await Url.find({ userId: userId })
-             .sort('-createdAt')
-             .limit(limit)
-             .skip(startIndex);
+        } else {
+          const urlList = await Url.find({ userId: userId })
+            .sort('-createdAt')
+            .limit(limit)
+            .skip(startIndex);
           res.status(200).json({
             status: 'success',
             page: results,
@@ -190,6 +226,21 @@ router.patch(
     });
   })
 );
+router.delete(
+  '/:id/',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const urlId = req.params.id;
+
+    await Url.findOneAndDelete({ urlId: urlId });
+    await clickedInf.findOneAndDelete({ _id: urlId });
+    res.status(200).json({
+      status: 'success',
+      message:'刪除成功'
+    });
+  })
+);
+
 
 router.post(
   '/:id/tag',

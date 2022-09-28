@@ -18,15 +18,15 @@ const clickedInfSchema = new mongoose.Schema({
   },
   urlId: {
     type: mongoose.Schema.ObjectId,
-    ref:'clickedinf'
+    ref: 'clickedinf',
   },
   createdAt: {
     type: Date,
     default: Date.now,
     select: false,
   },
-  repeatTimes: { type: String },
-  notRepeatTimes: { type: String },
+  repeatTimes: { type: Number, default: 0 },
+  notRepeatTimes: { type: Number, default: 0 },
 });
 // url
 const ClickedInf = mongoose.model('clickedinf', clickedInfSchema);
