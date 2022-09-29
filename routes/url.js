@@ -127,6 +127,7 @@ router.get(
             page: results,
             urlList,
           });
+          return;
         } if (sort == 'clicked') {
           const urlList = await Url.find({ userId: userId })
             .sort({ notRepeatTimes: -1 })
@@ -138,6 +139,7 @@ router.get(
             page: results,
             urlList,
           });
+          return;
         } else {
           const urlList = await Url.find({ userId: userId })
             .sort('-createdAt')
@@ -148,6 +150,7 @@ router.get(
             page: results,
             urlList,
           });
+          return;
         }
       } catch (e) {
         res.status(500).json({ message: e.message });
@@ -172,7 +175,6 @@ router.get(
   handleErrorAsync(async (req, res, next) => {
     const userId = req.user._id;
     const urlList = await Url.find({ userId: userId });
-    console.log(urlList);
     res.status(200).json({
       status: 'success',
       urlList: urlList,
