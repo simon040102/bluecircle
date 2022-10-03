@@ -61,7 +61,9 @@ const generateSendJWT= (user,statusCode,res)=>{
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_DAY,
     });
-    res.redirect(`http://127.0.0.1:5173/callback?token=${token}&name=${user.name}`);
+    res.redirect(
+      `https://bluecircle-shorten.netlify.app/#/callback?token=${token}&name=${user.name}`
+    );
   };
 module.exports = {
   isAuth,
