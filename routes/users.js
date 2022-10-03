@@ -79,6 +79,24 @@ router.patch(
     if (password !== confirmPassword) {
       return next(appError('400', '密碼不一致！', next));
     }
+    if (
+      !validator.isStrongPassword(password, {
+        minLength: 8,
+        minLowercase: 0,
+        minUppercase: 1,
+        minNumbers: 0,
+        minSymbols: 1,
+        returnScore: false,
+        pointsPerUnique: 0,
+        pointsPerRepeat: 0,
+        pointsForContainingLower: 0,
+        pointsForContainingUpper: 0,
+        pointsForContainingNumber: 0,
+        pointsForContainingSymbol: 0,
+      })
+    ) {
+      return next(appError('400', '密碼至少8碼，一個大寫和一個符號', next));
+    }
     newPassword = await bcrypt.hash(password, 12);
 
     const user = await User.findByIdAndUpdate(req.user.id, {
