@@ -149,13 +149,13 @@ router.post(
         from: process.env.MAIL_FROM,
         to: email,
         subject: 'BlueCircle 忘記密碼驗證信',
-        html: `<p>請點擊連擊修改密碼<p/><a href="http://127.0.0.1:5173/#/changepassword/${token}">驗證連結</a>`,
+        html: `<p>請點擊連擊修改密碼<p/><a href="https://bluecircle-shorten.netlify.app/#/changepassword/${token}">驗證連結</a>`,
       })
       .then((info) => {
         console.log({ info });
       })
-      .catch(err=>{
-        console.log(err)
+      .catch((err) => {
+        console.log(err);
       });
     
     res.status(200).json({
