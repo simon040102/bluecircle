@@ -84,6 +84,7 @@ router.get(
           var reg = new RegExp(q, 'i');
           sort == 'asc' ? 'createdAt' : '-notRepeatTimes';
           const filter = {
+            userId: userId,
             $or: [
               { url: { $regex: reg } },
               { shortUrl: { $regex: reg } },
