@@ -62,7 +62,7 @@ const generateSendJWT= (user,statusCode,res)=>{
       expiresIn: process.env.JWT_EXPIRES_DAY,
     });
     res.redirect(
-      `http://127.0.0.1:5173/#/${token}/name=${user.name}`
+      `https://bluecircle-shorten.netlify.app/#/${token}/name=${user.name}`
     );
   };
 module.exports = {
