@@ -203,7 +203,7 @@ router.get(
     const urlId = req.params.id;
     console.log(urlId);
 
-    const url = await clickedInf.findOne({ _id: urlId });
+    const url = await clickedInf.findOne({ id: urlId });
     const clicked = url.clicked;
     const NotRepeating = removeDuplicates(clicked, 'UserInform');
     console.log(clicked.length, NotRepeating.length);
