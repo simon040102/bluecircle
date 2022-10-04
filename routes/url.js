@@ -202,8 +202,8 @@ router.get(
   handleErrorAsync(async (req, res, next) => {
     const urlId = req.params.id;
     console.log(urlId);
-
-    const url = await clickedInf.findOne({ id: urlId });
+    const url = await clickedInf.findOne({ _id: urlId });
+    console.log(url)
     const clicked = url.clicked;
     const NotRepeating = removeDuplicates(clicked, 'UserInform');
     console.log(clicked.length, NotRepeating.length);
@@ -259,7 +259,7 @@ router.post(
         }
       );
     });
-    const newUrl = await Url.find({ _id: urlId });
+    const newUrl = await Url.findById({ _id: urlId });
     res.status(200).json({
       status: 'success',
       newUrl,
